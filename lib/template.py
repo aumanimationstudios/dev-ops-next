@@ -77,15 +77,15 @@ class states(root):
     # self._env = jinja2.Environment(loader=self._loader, trim_blocks=True)
     ret_loader = {}
     for x in self._loader.list_templates():
-      if (unicode(x).endswith(".yml")):
-        if (unicode(x).split("/")[-1] == "init.yml"):
-          key = unicode(x)[:-9].replace("/", ".")
+      if str(x).endswith(".yml"):
+        if (str(x).split("/")[-1] == "init.yml"):
+          key = str(x)[:-9].replace("/", ".")
           if(key):
-            ret_loader[key] = unicode(x)
+            ret_loader[key] = str(x)
         else:
-          key = unicode(x)[:-4].replace("/", ".")
+          key = str(x)[:-4].replace("/", ".")
           if(key):
-            ret_loader[key] = unicode(x)
+            ret_loader[key] = str(x)
     # lib.debug.debug(ret_loader)
     return (ret_loader)
 
@@ -94,10 +94,10 @@ class states(root):
       template_env = self._env.get_template(path)
       filecontent = template_env.render(slaveconst=slaveconst, masterconst=masterconst)
       return (filecontent)
-    if (self.list.has_key(path)):
+    if path in self.list:
       template_file = self.list[path]
       if(is_recursive):
-        if (cyclic_test.has_key(template_file)):
+        if template_file in cyclic_test:
           cyclic_test.clear()
           lib.debug.error("cyclic redundancy : " + str(template_file))
           raise Exception("cyclic redundancy : " + str(template_file))
@@ -116,7 +116,7 @@ class states(root):
               return_obj.extend(returned_obj)
         else:
           if (isinstance(yml_objs, dict)):
-            if(yml_objs.has_key("include")):
+            if "include" in yml_objs:
               states_include = yml_objs["include"]
               for state_include in states_include:
                 returned_obj = self.render(state_include,slaveconst=slaveconst,masterconst=masterconst)
@@ -125,7 +125,7 @@ class states(root):
             return_obj.append(yml_objs)
           else:
             for yml_obj in yml_objs:
-              if(yml_obj.has_key("include")):
+              if "include" in yml_obj:
                 states_include = yml_obj["include"]
                 for state_include in states_include:
                   returned_obj = self.render(state_include, slaveconst=slaveconst, masterconst=masterconst)
