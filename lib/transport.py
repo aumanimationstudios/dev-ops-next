@@ -61,7 +61,7 @@ class publisher(object):
     try:
       try:
         (request_id_rep, state_name_rep, topic_rep, msg_rep) = self._socket_rep.recv_multipart()
-        self._socket_rep.send_multipart([request_id_rep, state_name, msg_rep])
+        self._socket_rep.send_multipart([request_id_rep, state_name.encode(), msg_rep])
         lib.debug.debug(msg_rep)
       except:
         lib.debug.error(str(topic) + " : Timeout processing auth request")
