@@ -60,7 +60,7 @@ def event_handler(data):
     sys.path.append(even_root)
   if(event_high):
     for x in event_high:
-      if(x.has_key(data['event']['id'])):
+      if data['event']['id'] in x:
         for event in x:
           lib.debug.debug(x[event])
           for event_key in x[event]:
@@ -84,7 +84,7 @@ def render_high(high_state_obj,slaveconst={},masterconst={}):
     for fn_exp in hs.keys():
       (const_key, const_exp) = (fn_exp.split(":")[:-1], fn_exp.split(":")[-1])
       states_list = hs[fn_exp]['states']
-      if(hs[fn_exp].has_key("match")):
+      if "match" in hs[fn_exp]:
         match = hs[fn_exp]["match"]
 
         if(match == "slaveconst"):
@@ -92,11 +92,11 @@ def render_high(high_state_obj,slaveconst={},masterconst={}):
           for sc in const_key:
             formatch = formatch[sc]
 
-          if(hs[fn_exp].has_key("compare")):
+          if "compare" in hs[fn_exp]:
             comp_obj = hs[fn_exp]['compare']
-            if(isinstance(comp_obj,dict)):
+            if isinstance(comp_obj, dict):
               comp_op = comp_obj['operator']
-              if(comp_obj.has_key('type')):
+              if 'type' in comp_obj:
                 comp_type = comp_obj['type']
                 comp_str = "is_match = True if(" + comp_type +"(const_exp) "+ comp_op +" "+ comp_type +"(formatch)) else False"
               else:
@@ -146,7 +146,7 @@ class masterconst(lib.template.states):
 
   def masterconst(self,slaveconst={}):
     state_list = None
-    if(self.list.has_key("high")):
+    if "high" in self.list:
       highobj = self.render("high",slaveconst=slaveconst)
 
       valid_states = render_high(highobj,slaveconst=slaveconst)
@@ -162,7 +162,7 @@ class masterconst(lib.template.states):
       for x in state_list:
         if(x == "high"):
           continue
-        if(not self.list.has_key(x)):
+        if x not in self.list:
           lib.debug.debug("No state named : "+ str(x))
           continue
         template_file = self.list[x]
@@ -172,19 +172,19 @@ class masterconst(lib.template.states):
         yml_objs = yaml.safe_load(yml_content)
         if(isinstance(yml_objs,dict)):
           for yo in yml_objs:
-            if (const_dict.has_key(yo)):
-              lib.debug.warn("duplicate key : "+ str(yo) +" : "+ template_file)
+            if yo in const_dict:
+              lib.debug.warning("duplicate key : "+ str(yo) +" : "+ template_file)
           const_dict.update(yml_objs)
         elif(isinstance(yml_objs,list)):
           for yml_obj in yml_objs:
             if(isinstance(yml_obj,dict)):
               for yo in yml_obj:
-                if(const_dict.has_key(yo)):
-                  lib.debug.warn("duplicate key : "+ str(yo) +" : "+ template_file)
+                if yo in const_dict:
+                  lib.debug.warning("duplicate key : "+ str(yo) +" : "+ template_file)
                 const_dict[yo] = yml_obj[yo]
             else:
-              if(const_dict.has_key(yml_obj)):
-                lib.debug.warn("duplicate key : " + str(yml_obj) +" : "+ template_file)
+              if yml_obj in const_dict:
+                lib.debug.warning("duplicate key : " + str(yml_obj) +" : "+ template_file)
               const_dict[yml_obj] = True
     lib.debug.debug(const_dict)
     return(const_dict)
