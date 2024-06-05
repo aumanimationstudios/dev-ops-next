@@ -28,14 +28,14 @@ def publisher():
     (request_id, hostfnmatch, state) = socket.recv_multipart()
     hosts = []
     hostsping = {}
-    for h in hostfnmatch.split(","):
+    for h in hostfnmatch.decode('utf-8').split(","):
       hostemp = lib.master_utils.get_slaves_match(h)
       if (hostemp):
         for ht in hostemp:
           hosts.append(ht['hostid'])
 
     for x in hosts:
-      result = pub.publish(x, state, request_id)
+      result = pub.publish(x, state.decode('utf-8'), request_id.decode('utf-8'))
       hostsping.update(result)
 
 
