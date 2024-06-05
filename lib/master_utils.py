@@ -104,13 +104,13 @@ def render_high(high_state_obj,slaveconst={},masterconst={}):
               lib.debug.debug(comp_str)
               exec(comp_str)
               if(is_match):
-                lib.debug.debug("matched : " + unicode(formatch) + " : " + unicode(const_exp))
+                lib.debug.debug("matched : " + str(formatch) + " : " + str(const_exp))
                 valid_states_list.extend(states_list)
             else:
               return("compare object is not a dict : "+ str(comp_obj))
           else:
-            if(fnmatch.fnmatch(unicode(formatch),unicode(const_exp))):
-              lib.debug.debug("matched : "+ unicode(formatch) +" : "+ unicode(const_exp))
+            if(fnmatch.fnmatch(str(formatch),str(const_exp))):
+              lib.debug.debug("matched : "+ str(formatch) +" : "+ str(const_exp))
               valid_states_list.extend(states_list)
           # lib.debug.debug(str(const_key) + " : " + str(const_exp) + " : " + str(formatch))
         elif(match == "cidr"):
