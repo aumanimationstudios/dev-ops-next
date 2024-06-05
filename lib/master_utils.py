@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 #-*- coding: utf-8 -*-
 __author__ = "Shrinidhi Rao"
 __license__ = "GPL"
@@ -69,9 +69,9 @@ def event_handler(data):
             # else:
             mod_import = "import " + x[event][event_key]['import']
             mod_run = "mod_ret = "+ x[event][event_key]['run'] + "(data)"
-            exec mod_import
+            exec (mod_import)
             lib.debug.debug("importing : "+ str(sys.modules[x[event][event_key]['import']].__file__))
-            exec mod_run
+            exec (mod_run)
             lib.debug.debug(mod_import +" : "+ mod_run)
             lib.debug.debug(mod_ret)
 
@@ -102,7 +102,7 @@ def render_high(high_state_obj,slaveconst={},masterconst={}):
               else:
                 comp_str = "is_match = True if(const_exp " + comp_op + " formatch) else False"
               lib.debug.debug(comp_str)
-              exec comp_str
+              exec (comp_str)
               if(is_match):
                 lib.debug.debug("matched : " + unicode(formatch) + " : " + unicode(const_exp))
                 valid_states_list.extend(states_list)
