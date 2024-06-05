@@ -102,6 +102,7 @@ def render_high(high_state_obj,slaveconst={},masterconst={}):
               else:
                 comp_str = "is_match = True if(const_exp " + comp_op + " formatch) else False"
               lib.debug.debug(comp_str)
+              is_match = False
               exec(comp_str)
               if(is_match):
                 lib.debug.debug("matched : " + str(formatch) + " : " + str(const_exp))
