@@ -55,7 +55,7 @@ else:
         print (x +" : "+ simplejson.dumps(validhosts[x],indent=4))
     else:
       print("No valid hosts")
-    if(not re.match('^ping\.',args.state)):
+    if not re.match(r'^ping\.', args.state):
 
       hosts_file = os.path.join(lib.constants.m_result_logs_dir,lib.constants.m_result_logs_prefix_hosts + lib.constants.m_result_logs_delimiter + uid)
       hosts_file_fd = open(hosts_file,"w")

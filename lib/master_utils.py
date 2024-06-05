@@ -73,7 +73,7 @@ def event_handler(data):
             lib.debug.debug("importing : "+ str(sys.modules[x[event][event_key]['import']].__file__))
             exec(mod_run)
             lib.debug.debug(mod_import +" : "+ mod_run)
-            lib.debug.debug(mod_ret)
+            # lib.debug.debug(mod_ret)
 
 
 
