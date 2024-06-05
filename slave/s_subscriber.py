@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 #-*- coding: utf-8 -*-
 __author__ = "Shrinidhi Rao"
 __license__ = "GPL"
@@ -27,8 +27,10 @@ import time
 
 app_lock_file = os.path.join(tempfile.gettempdir(),"devops-slave.lock")
 
+
 def receive_signal(signum, stack):
   quit()
+
 
 signal.signal(signal.SIGTERM, receive_signal)
 signal.signal(signal.SIGINT, receive_signal)
@@ -36,8 +38,9 @@ signal.signal(signal.SIGABRT, receive_signal)
 signal.signal(signal.SIGHUP, receive_signal)
 signal.signal(signal.SIGSEGV, receive_signal)
 
+
 def quit():
-  lib.debug.warn("killing s_subcriber")
+  lib.debug.warning("killing s_subcriber")
   # try:
   #   os.remove(app_lock_file)
   # except:
@@ -45,52 +48,53 @@ def quit():
   try:
     os.remove(lib.constants.s_process_lock_file)
   except:
-    lib.debug.warn("no file : "+ lib.constants.s_process_lock_file)
+    lib.debug.warning("no file : "+ lib.constants.s_process_lock_file)
   sys.exit(0)
 
 
 def app_lock():
-  if(os.path.exists(app_lock_file)):
-    f = open(app_lock_file,"r")
-    pid = f.read().strip()
-    f.close()
+  if os.path.exists(app_lock_file):
+    with open(app_lock_file, "r") as f:
+      pid = f.read().strip()
+    # f.close()
     try:
       p = psutil.Process(int(pid))
       lib.debug.error("seems like a different process is running")
       os._exit(0)
     except:
-      lib.debug.warn(sys.exc_info())
-      f = open(app_lock_file,"w")
+      lib.debug.warning(sys.exc_info())
+      with open(app_lock_file, "w") as f:
+        try:
+          fcntl.lockf(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except:
+          lib.debug.error(sys.exc_info())
+          os._exit(1)
+        f.write(str(os.getpid()))
+        f.flush()
+        fcntl.lockf(f, fcntl.LOCK_UN)
+      # f.close()
+  else:
+    with open(app_lock_file, "w") as f:
       try:
-        fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        fcntl.lockf(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
       except:
         lib.debug.error(sys.exc_info())
         os._exit(1)
-      f.write(unicode(os.getpid()))
+      f.write(str(os.getpid()))
       f.flush()
-      fcntl.flock(f, fcntl.LOCK_UN)
-      f.close()
-  else:
-    f = open(app_lock_file,"w")
-    try:
-      fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
-    except:
-      lib.debug.error(sys.exc_info())
-      os._exit(1)
-    f.write(unicode(os.getpid()))
-    f.flush()
-    fcntl.flock(f, fcntl.LOCK_UN)
-    f.close()
-
+      fcntl.lockf(f, fcntl.LOCK_UN)
+    # f.close()
 
 
 class slave_sub(lib.transport.subscriber):
 
-  def process(self, topic, request_id,state_name):
+  def process(self, topic, request_id, state_name):
     slaveconst = lib.slave_utils.slaveconst().slaveconst()
     ret_value = 1
-    if(state_name != "high"):
-      r = requests.post("http://"+ lib.config.slave_conf['master'] + ":" + str(lib.config.slave_conf['master_rest_port']) + "/states/" + lib.hostname_ip.hostname + "/"+ state_name +"/0" , data=simplejson.dumps(slaveconst))
+    if state_name != "high":
+      lib.debug.info(lib.hostname_ip.hostname)
+      lib.debug.info(state_name)
+      r = requests.post("http://" + lib.config.slave_conf['master'] + ":" + str(lib.config.slave_conf['master_rest_port']) + "/states/" + lib.hostname_ip.hostname + "/" + state_name + "/0", data=simplejson.dumps(slaveconst))
     else:
       r = requests.post("http://" + lib.config.slave_conf['master'] + ":" + str(lib.config.slave_conf['master_rest_port']) + "/high/" + lib.hostname_ip.hostname , data=simplejson.dumps(slaveconst))
     r_content = r.content
@@ -104,14 +108,14 @@ class slave_sub(lib.transport.subscriber):
           # if(not done):
           #   return(0)
     except:
-      lib.debug.warn(sys.exc_info())
+      lib.debug.warning(sys.exc_info())
       ret_value = 0
 
     lib.debug.info("removing process lock file : " + lib.constants.s_process_lock_file)
     try:
       os.remove(lib.constants.s_process_lock_file)
     except:
-      lib.debug.warn("no file : " + lib.constants.s_process_lock_file)
+      lib.debug.warning("no file : " + lib.constants.s_process_lock_file)
     return(ret_value)
 
 
@@ -131,8 +135,6 @@ def register_host():
       time.sleep(2)
 
 
-
-
 def start_sub(q=None):
 
   sub = slave_sub(topic=[lib.slave_utils.hostid()])
@@ -146,18 +148,7 @@ if __name__ == '__main__':
   try:
     os.remove(lib.constants.s_process_lock_file)
   except:
-    lib.debug.warn("no file : "+ lib.constants.s_process_lock_file)
+    lib.debug.warning("no file : "+ lib.constants.s_process_lock_file)
   register_host()
   start_sub()
-
-
-
-    
-
-
-
-
-
-
-
 

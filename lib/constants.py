@@ -22,7 +22,7 @@ import time
 # IE: NOTHING SHOULD BE HERE THAT GENERATED DYNAMICALLY.
 
 os.environ['XDG_CONFIG_DIRS'] = '/etc'
-configdir = os.path.join(appdirs.site_config_dir(),"dev-ops")
+configdir = os.path.join(appdirs.site_config_dir(),"dev-ops-next")
 masterdir = os.path.join(configdir,"master")
 slavedir = os.path.join(configdir,"slave")
 default_delimiter = "__"

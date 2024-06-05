@@ -54,9 +54,9 @@ class publisher(object):
     lib.debug.debug("pinging : "+ str(topic) +" : "+ str(state_name))
     state_name = state_name.strip()
     if(state_name == "ping.slaveconst"):
-      self._socket_pub.send_multipart([bytes(unicode(topic)), bytes(unicode(request_id)), bytes(unicode("ping.slaveconst"))])
+      self._socket_pub.send_multipart([topic.encode('utf-8'), request_id.encode('utf-8'), "ping.slaveconst".encode('utf-8')])
     else:
-      self._socket_pub.send_multipart([bytes(unicode(topic)), bytes(unicode(request_id)), bytes(unicode("ping.wtf"))])
+      self._socket_pub.send_multipart([topic.encode('utf-8'), request_id.encode('utf-8'), "ping.wtf".encode('utf-8')])
     hosts_in_topic = {}
     try:
       try:
@@ -75,7 +75,7 @@ class publisher(object):
         if(msg_reved['status'] == "free"):
           hosts_in_topic[msg_reved['hostid']] = msg_reved['status']
           if (state_name != "ping.wtf" and state_name != "ping.slaveconst"):
-            self._socket_pub.send_multipart([bytes(unicode(topic)), bytes(unicode(request_id)), bytes(unicode(state_name))])
+            self._socket_pub.send_multipart([topic.encode('utf-8'), request_id.encode('utf-8'), state_name.encode('utf-8')])
             hosts_in_topic[msg_reved['hostid']] = "success"
         else:
           hosts_in_topic[msg_reved['hostid']] = msg_reved['status'] +" : "+ msg_reved['request_id']
@@ -149,10 +149,10 @@ class subscriber(object):
     self._socket_sub.connect("tcp://{0}:{1}".format(self._ip, self._port))
     if(isinstance(self._topic,list)):
       for topix in self._topic:
-        self._socket_sub.setsockopt(zmq.SUBSCRIBE, bytes(unicode(topix)))
+        self._socket_sub.setsockopt(zmq.SUBSCRIBE, topix.encode('utf-8'))
         lib.debug.debug("connecting to topic : "+ str(topix))
     else:
-      self._socket_sub.setsockopt(zmq.SUBSCRIBE, bytes(unicode(self._topic)))
+      self._socket_sub.setsockopt(zmq.SUBSCRIBE, self._topic.encode('utf-8'))
       lib.debug.debug("connecting to topic : " + str(self._topic))
     fse = threading.Thread(target=self._fire_start_event)
     fse.start()
@@ -174,7 +174,7 @@ class subscriber(object):
           self._socket_req.setsockopt(zmq.RCVTIMEO, 1000*2)
           self._socket_req.connect("tcp://{0}:{1}".format(lib.config.slave_conf['master'], lib.config.slave_conf['master_ping_port']))
           try:
-            self._socket_req.send_multipart([bytes(unicode(request_id)), bytes(unicode(state_name)),bytes(unicode(topic)), bytes(unicode(msg_to_send))])
+            self._socket_req.send_multipart([request_id, state_name, topic, msg_to_send.encode('utf-8')])
           except:
             lib.debug.error(sys.exc_info())
           try:
@@ -201,7 +201,7 @@ class subscriber(object):
           self._socket_req.setsockopt(zmq.RCVTIMEO, 1000)
           self._socket_req.connect("tcp://{0}:{1}".format(lib.config.slave_conf['master'], lib.config.slave_conf['master_ping_port']))
           try:
-            self._socket_req.send_multipart([bytes(unicode(request_id)), bytes(unicode(state_name)), bytes(unicode(topic)), bytes(unicode(msg_to_send))])
+            self._socket_req.send_multipart([request_id.encode('utf-8'), state_name.encode('utf-8'), topic.encode('utf-8'), msg_to_send.encode('utf-8')])
           except:
             lib.debug.error(sys.exc_info())
           try:
@@ -221,7 +221,7 @@ class subscriber(object):
           slf.flush()
           slf.close()
           lib.debug.info("staring process thread")
-          process_thread = threading.Thread(target=self.process, args=(topic, request_id, state_name,))
+          process_thread = threading.Thread(target=self.process, args=(topic.decode('utf-8'), request_id.decode('utf-8'), state_name.decode('utf-8'),))
           process_thread.start()
       # except KeyboardInterrupt:
       #   break
@@ -291,7 +291,7 @@ class server(object):
       lib.debug.info("Received request: [ {0} ] -> [ {1} ]".format(str(worker_id),msg_type_args))
       reply = self.process(received)
       reply_to_send = simplejson.dumps(reply)
-      socket.send_multipart([bytes(unicode(hostid)),bytes(unicode(request_id)),bytes(unicode(reply_to_send))])
+      socket.send_multipart([hostid.encode('utf-8'), request_id.encode('utf-8'), reply_to_send.encode('utf-8')])
       lib.debug.info("Replied to request: [ {0} ] -> [ {1} ]".format(str(worker_id), msg_type_args))
 
 
@@ -355,7 +355,7 @@ class client(object):
     timestarted = time.time()
     hostdetails = simplejson.dumps({'hostname':lib.hostname_ip.hostname, 'ip':lib.hostname_ip.ip})
     send_msg = simplejson.dumps(self.process(message_type, message_type_args,hostdetails))
-    socket.send_multipart([bytes(unicode(request_id)), bytes(unicode(hostdetails)), bytes(unicode(message_type)), bytes(unicode(send_msg))])
+    socket.send_multipart([request_id.encode('utf-8'), hostdetails.encode('utf-8'), message_type.encode('utf-8'), send_msg.encode('utf-8')])
     while(True):
       sockets = dict(poller.poll(10000))
       if(sockets):

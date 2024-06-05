@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 #-*- coding: utf-8 -*-
 __author__ = "Shrinidhi Rao"
 __license__ = "GPL"
@@ -13,16 +13,17 @@ import yaml
 
 
 os.environ['XDG_CONFIG_DIRS'] = '/etc'
-configdir = os.path.join(appdirs.site_config_dir(),"dev-ops")
+configdir = os.path.join(appdirs.site_config_dir(),"dev-ops-next")
 masterdir = os.path.join(configdir,"master")
 slavedir = os.path.join(configdir,"slave")
 
 
-supervisorpath = "/etc/supervisor/conf.d/"
-installdir = "/opt/dev-ops"
-states_path = "/srv/dev-ops/states/"
-events_root = "/srv/dev-ops/events/"
-masterconst_root = "/srv/dev-ops/masterconst/"
+master_supervisorpath = "/etc/supervisor/conf.d/"
+slave_supervisorpath = "/etc/supervisor.d/"
+installdir = "/opt/dev-ops-next"
+states_path = "/srv/devops-aum/states/"
+events_root = "/srv/devops-aum/events/"
+masterconst_root = "/srv/dev-ops-next/masterconst/"
 
 progpath = installdir
 source_master_path = os.path.join(progpath,"install","master")
@@ -40,26 +41,29 @@ parser.add_argument("--id",dest="id",help="id of the machine if you dont want to
 args = parser.parse_args()
 
 
-gitclone = "cd /opt/ ; git clone https://github.com/shrinidhi666/dev-ops.git ;cd /opt/dev-ops; git checkout master; cd -"
-gitpull =  "cd /opt/dev-ops/ ; git pull"
+# gitclone = "cd /opt/ ; git clone https://github.com/shrinidhi666/dev-ops.git ;cd /opt/dev-ops; git checkout master; cd -"
+gitclone = "cd /opt/ ; git clone https://github.com/aumanimationstudios/dev-ops-next.git ; cd /opt/dev-ops-next ; git checkout master; cd -"
+gitpull = "cd /opt/dev-ops-next/ ; git pull"
+
 
 def gitupdate():
-  p = subprocess.Popen(gitpull,shell=True,stderr=subprocess.PIPE, stdout=subprocess.PIPE)
+  p = subprocess.Popen(gitpull, shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
   output = p.communicate()
-  print (output)
+  print(output)
   ret = p.wait()
-  return(ret)
+  return ret
+
 
 def gitnew():
-  p = subprocess.Popen(gitclone,shell=True,stderr=subprocess.PIPE, stdout=subprocess.PIPE)
+  p = subprocess.Popen(gitclone, shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
   output = p.communicate()
-  print (output)
+  print(output)
   ret = p.wait()
-  return(ret)
+  return ret
 
 
 if(args.master):
-  if(os.path.exists(installdir)):
+  if os.path.exists(installdir):
     ret = gitupdate()
   else:
     ret = gitnew()
@@ -95,13 +99,13 @@ if(args.master):
     print(sys.exc_info())
 
   try:
-    os.system("rsync -av "+ master_supervisorconf.rstrip(os.sep) +"/ "+ supervisorpath.rstrip(os.sep) +"/")
+    os.system("rsync -av "+ master_supervisorconf.rstrip(os.sep) +"/ "+ master_supervisorpath.rstrip(os.sep) +"/")
   except:
     print(sys.exc_info())
 
 
 if(args.slave):
-  if (os.path.exists(installdir)):
+  if os.path.exists(installdir):
     ret = gitupdate()
   else:
     ret = gitnew()
@@ -120,7 +124,7 @@ if(args.slave):
     print(sys.exc_info())
 
   try:
-    os.system("rsync -av "+ slave_supervisorconf.rstrip(os.sep) +"/ "+ supervisorpath.rstrip(os.sep) +"/")
+    os.system("rsync -av "+ slave_supervisorconf.rstrip(os.sep) +"/ "+ slave_supervisorpath.rstrip(os.sep) +"/")
   except:
     print(sys.exc_info())
 
