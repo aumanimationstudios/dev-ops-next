@@ -177,7 +177,7 @@ class subscriber(object):
           self._socket_req.setsockopt(zmq.RCVTIMEO, 1000*2)
           self._socket_req.connect("tcp://{0}:{1}".format(lib.config.slave_conf['master'], lib.config.slave_conf['master_ping_port']))
           try:
-            self._socket_req.send_multipart([request_id.encode(), state_name.encode(), topic.encode(), msg_to_send.encode()])
+            self._socket_req.send_multipart([request_id.encode('utf-8'), state_name.encode('utf-8'), topic.encode('utf-8'), msg_to_send.encode('utf-8')])
           except:
             lib.debug.error(sys.exc_info())
           try:
