@@ -46,7 +46,8 @@ else:
 
     socket.connect("ipc:///tmp/publisher.zmq.sock")
     socket.setsockopt(zmq.SNDTIMEO, 1000 * 2)
-    socket.send_multipart([uid,args.hosts,args.state])
+    # socket.send_multipart([uid,args.hosts,args.state])
+    socket.send_multipart([uid.encode('utf-8'), args.hosts.encode('utf-8'), args.state.encode('utf-8')])
     validhosts = socket.recv_pyobj()
     socket.close()
     totalhosts = len(validhosts)
