@@ -54,7 +54,7 @@ class publisher(object):
     lib.debug.debug("pinging : "+ str(topic) +" : "+ str(state_name))
     state_name = state_name.strip()
     if(state_name == "ping.slaveconst"):
-      self._socket_pub.send_multipart([topic.encode(), str(request_id).encode(), "ping.slaveconst".encode()))])
+      self._socket_pub.send_multipart([topic.encode(), str(request_id).encode(), "ping.slaveconst".encode()])
     else:
       self._socket_pub.send_multipart([topic.encode(), str(request_id).encode(), "ping.wtf".encode()])
     hosts_in_topic = {}
