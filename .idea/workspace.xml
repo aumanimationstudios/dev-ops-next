@@ -5,19 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0d525c2c-f941-4cc2-b09c-7be7afe8cf69" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/install.py" beforeDir="false" afterPath="$PROJECT_DIR$/install.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/install/master/master.conf" beforeDir="false" afterPath="$PROJECT_DIR$/install/master/master.conf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/install/slave/slave.conf" beforeDir="false" afterPath="$PROJECT_DIR$/install/slave/slave.conf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/install/supervisor/master/devops-master.conf" beforeDir="false" afterPath="$PROJECT_DIR$/install/supervisor/master/devops-master.conf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/install/supervisor/slave/devops-slave.conf" beforeDir="false" afterPath="$PROJECT_DIR$/install/supervisor/slave/devops-slave.conf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/constants.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/constants.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/hostname_ip.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/hostname_ip.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/slave_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/slave_utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/transport.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/transport.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/slave/s_subscriber.py" beforeDir="false" afterPath="$PROJECT_DIR$/slave/s_subscriber.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/version.yml" beforeDir="false" afterPath="$PROJECT_DIR$/version.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/master_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/master_utils.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
